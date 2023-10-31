@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  database:
+    container_name: goals-database
+    image: mongo
+    volumes:
+      - goals-data:/data/db
+    env_file:
+      - ./env/database.env
+  server:
+    container_name: goals-server
+    build: ./backend
+    # Development build
+    # build:
+    #   context: ./backend
+    #   dockerfile: Dockerfile.dev
+    ports:
+      - 8888:80
+    volumes:
+      - goals-server-logs:/app/log
+      - ./backend:/app"
+      - /app/node_modules
+    env_file:
+      # - ./env/database.env
+      - ./env/backend.env
+    depends_on:
+      - database
+  client:
+    container_name: goals-client
+    build: ./frontend
+    ports:
+      - 3001:3000
+    volumes:
+      - ./frontend/src:/app/src
+    # enabling interactive mode
+    stdin_open: true
+    tty: true
+    depends_on:
+      - server
+
+
+
+volumes:
+  goals-data:
+  goals-server-logs:

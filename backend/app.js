@@ -82,9 +82,11 @@ app.delete('/goals/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to delete goal.' });
   }
 });
+console.log('TRYING TO CONNECT TO MONGODB');
+console.log(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@database:27017/course-goals?authSource=admin`);
 
 mongoose.connect(
-  `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@mongodb:27017/course-goals?authSource=admin`,
+  `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@database:27017/course-goals?authSource=admin`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -94,8 +96,8 @@ mongoose.connect(
       console.error('FAILED TO CONNECT TO MONGODB');
       console.error(err);
     } else {
-      console.log('CONNECTED TO MONGODB!!');
-      app.listen(80);
+      console.log(`CONNECTED TO MONGODB!!`);
+      app.listen(80, () => console.log(`${process.env.APP_NAME} has started!`));
     }
   }
 );
